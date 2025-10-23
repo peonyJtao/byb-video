@@ -1,0 +1,113 @@
+<!--
+ * @Date: 2025-10-22 23:23:29
+ * @LastEditTime: 2025-10-23 21:25:45
+ * @FilePath: /BYB-Dapp/Users/jtao/Desktop/BYB项目/byb-video/index.html
+ * @Author: peony
+ * @LastEditors: peony
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频播放器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100vh;
+            background: #060f17;
+            font-family: Arial, sans-serif;
+        }
+        
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+
+        }
+        
+        video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* max-width: 100%;
+            max-height: 100%; */
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <video id="videoPlayer" muted playsinline preload="auto">
+            <source id="videoSource" type="video/mp4">
+        </video>
+    </div>
+
+    <script>
+        // 获取 URL 参数
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        // 根据 type 参数设置视频源
+        const type = getUrlParameter('type') || '1'; // 默认为 1
+        const videoPath = `video/${type}.mp4`;
+        
+        const video = document.getElementById('videoPlayer');
+        const videoSource = document.getElementById('videoSource');
+        
+        // 设置视频源
+        videoSource.src = videoPath;
+        video.load(); // 重新加载视频
+        
+        // 尝试播放的函数
+        function tryPlay() {
+            video.play().catch(error => {
+                // 点击屏幕开始播放
+                document.body.addEventListener('click', function() {
+                    video.play();
+                }, { once: true });
+            });
+        }
+        
+        // 视频加载完成后才开始播放
+        video.addEventListener('loadeddata', function() {
+            tryPlay();
+        });
+        
+        // 如果已经加载好了，直接播放
+        if (video.readyState >= 3) {
+            tryPlay();
+        }
+        
+        // 播放结束后跳转
+        video.addEventListener('ended', function() {
+            setTimeout(() => {
+                window.location.href = 'https://www.bybanx.top';
+            }, 500);
+        });
+        
+        // 视频加载错误处理
+        video.addEventListener('error', function() {
+        });
+    </script>
+</body>
+</html>
